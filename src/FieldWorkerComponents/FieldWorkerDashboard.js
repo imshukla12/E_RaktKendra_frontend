@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import FieldWorkerNavbar from './FieldWorkerNavbar'
 import BloodRequests from './BloodRequests'
 import BloodDonationRequests from './BloodDonationRequests'
 
 const FieldWorkerDashboard = () => {
 
+  // const fieldWorker = JSON.parse(localStorage.getItem("fieldWorker"))
+  // const [bloodDonationRequests, setBloodDonationRequests] = useState([])
   const [viewBloodRequests, setViewBloodRequests] = useState(false)
   const [viewBloodDonationRequests, setViewBloodDonationRequests] = useState(false)
 

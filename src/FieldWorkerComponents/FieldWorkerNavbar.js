@@ -4,8 +4,13 @@ import { faCircleUser } from '@fortawesome/free-solid-svg-icons';
 import logo from "../images/logo.png"
 
 const FieldWorkerNavbar = () => {
-
+    const fieldWorker = JSON.parse(localStorage.getItem("fieldWorker"))
     const [isOpen, setIsOpen] = useState(false)
+
+    const logout = () =>{
+        localStorage.removeItem("fieldWorker")
+        window.location.href = "/"
+    }
 
     return (
         <nav className="bg-red-700 border-red-600 dark:bg-red-700 top-0 w-full z-20 left-0 dark:border-red-600">
@@ -17,7 +22,7 @@ const FieldWorkerNavbar = () => {
                     <div className="flex flex-row items-center justify-end">
                         <div className="relative flex flex-row items-center justify-end space-x-4">
                             <div><a href='/fieldWorker' className='text-white font-medium font-serif hover:text-blue-200'>Home</a></div>
-                            <div className='text-white font-medium font-serif'>FeildWorker</div>
+                            <div className='text-white font-medium font-serif'>{fieldWorker.firstName}</div>
                             <div>
                                 <button
                                     className="py-2 rounded inline-flex items-center"
@@ -34,7 +39,7 @@ const FieldWorkerNavbar = () => {
                                     <div className="rounded-md bg-red-50 shadow-xs">
                                         <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                             <a href="/updateProfile" className="block px-4 py-2 text-sm font-serif font-medium text-gray-700 hover:bg-red-200 hover:text-gray-900" role="menuitem">Update Profile</a>
-                                            <button className="w-full block px-4 py-2 text-sm font-serif font-medium text-gray-700 hover:bg-red-400 hover:text-gray-900" role="menuitem">Logout</button>
+                                            <button className="w-full block px-4 py-2 text-sm font-serif font-medium text-gray-700 hover:bg-red-400 hover:text-gray-900" role="menuitem" onClick={logout}>Logout</button>
                                         </div>
                                     </div>
                                 </div>

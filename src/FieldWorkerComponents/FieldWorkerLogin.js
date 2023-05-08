@@ -7,20 +7,19 @@ import { useNavigate } from "react-router-dom";
 const FieldWorkerLogin = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  console.log("e",email)
-  console.log("p",password)
   const navigate = useNavigate()
 
-  const handleSubmit = async() => {
-    console.log("submit")
+  const handleSubmit = async(event) => {
+    event.preventDefault();
+    // console.log("submit")
     const data = {
       "username": email,
       "password": password
     }
-    console.log("data", data)
-    await axios.post(`http://localhost:9090/worker/workerLogin`,data)
+    // console.log("data", data)
+    await axios.post(`http://localhost:9090/fieldWorker/workerLogin`,data)
     .then((response) => {
-      console.log("response", response.data)
+      // console.log("response", response.data)
       localStorage.setItem("fieldWorker", JSON.stringify(response.data))
       navigate(`/fieldWorker`)
     })

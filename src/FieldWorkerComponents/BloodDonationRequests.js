@@ -1,22 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios';
 
 const BloodDonationRequests = () => {
-    const [bloodDonationRequests, setBloodDonationRequests] = useState([
-        {
-            "id": 1,
-            "bloodType": "A+"
-        },
-        {
-            "id": 2,
-            "bloodType": "O+"
-        },
-        {
-            "id": 3,
-            "bloodType": "O+"
-        }
-    ]);
+
+    const fieldWorker = JSON.parse(localStorage.getItem("fieldWorker"))
+    const [bloodDonationRequests, setBloodDonationRequests] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(2);
+    const [count, setCount] = useState(0)
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -33,6 +24,43 @@ const BloodDonationRequests = () => {
         </li>
     ));
 
+    const getAllBloodDonationRequest = async () => {
+        await axios.get(`http://localhost:9090/bloodDonation/getAllBloodDonationRequests/${fieldWorker.bloodBankId}`)
+            .then((response) => {
+                setBloodDonationRequests(response.data)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+
+    const acceptRequest = async(id) => {
+        await axios.delete(`http://localhost:9090/bloodDonation/acceptBloodDonationRequest/${id}`)
+        .then((response) => {
+            console.log(response.data)
+            setCount(count+1)
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+    }
+
+    const rejectRequest = async(userId) => {
+        await axios.delete(`http://localhost:9090/bloodDonation/revokeBloodDonationRequest/${userId}`)
+        .then((response) => {
+            console.log(response.data)
+            setCount(count+1)
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+    }
+
+
+    useEffect(() => {
+        getAllBloodDonationRequest()
+    }, [count])
+
     return (
         <div className="p-6 rounded-lg border-l-2 border-t-2 border-zinc-600 mt-4 bg-stone-300 shadow-xl">
             <table className="table-auto w-full mx-auto">
@@ -48,28 +76,24 @@ const BloodDonationRequests = () => {
                     {currentItems.length > 0 ? (
                         currentItems.map((p) => (
                             <tr key={p.id} className='border-2 border-zinc-400'>
-                                <td>{p.id}</td>
+                                <td>{p.bloodDonationRequestId}</td>
                                 <td>{p.bloodType}</td>
                                 <td className='flex flex-row'>
                                     <div className='p-2'>
-                                    <button
-                                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-2 rounded"
-                                        // onClick={() =>
-                                        //     downloadPDF(p.prescriptionId, p.consultationDate)
-                                        // }
-                                    >
-                                        Accept
-                                    </button>
+                                        <button
+                                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-2 rounded"
+                                            onClick={() => acceptRequest(p.bloodDonationRequestId)}
+                                        >
+                                            Accept
+                                        </button>
                                     </div>
                                     <div className='p-2'>
-                                    <button
-                                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-2 rounded"
-                                        // onClick={() =>
-                                        //     downloadPDF(p.prescriptionId, p.consultationDate)
-                                        // }
-                                    >
-                                        Reject
-                                    </button>
+                                        <button
+                                            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-2 rounded"
+                                            onClick={() => rejectRequest(p.userId)}
+                                        >
+                                            Reject
+                                        </button>
                                     </div>
                                 </td>
                             </tr>

@@ -3,6 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar'
+import axios from 'axios';
 
 const UserRegistration = () => {
     const navigate = useNavigate()
@@ -20,32 +21,34 @@ const UserRegistration = () => {
     const [state, setState] = useState("")
     const [pinCode, setPinCode] = useState("")
 
-    // const addPatient = () => {
-    //     const data = {
-    //         title: title,
-    //         firstName: firstName,
-    //         lastName: lastName,
-    //         gender: gender,
-    //         phoneNo: phoneNo,
-    //         email: email,
-    //         dob: selectedDate,
-    //         addr: address,
-    //         city: city,
-    //         pincode: pinCode,
-    //     }
-    //     await axios.post(`${process.env.REACT_APP_BACKEND_URL}/patient/addPatient`, data)
-    //         .then((response) => {
-    //             console.log(response.data)
-    //             console.log("user added")
-    //         })
-    //         .catch((error) => {
-    //             console.log(error)
-    //         })
-    // }
+    const addPatient = async() => {
+        const data ={
+            title : title,
+            firstName : firstName,
+            lastName : lastName,
+            dob : selectedDate,
+            gender : gender,
+            phoneNumber : phoneNo,
+            emailId : email,
+            password : password,
+            bloodType : bloodType,
+            address : address,
+            city : city,
+            pincode : pinCode
+        }        
+        await axios.post(`http://localhost:9090/user/addUser`, data)
+            .then((response) => {
+                console.log(response.data)
+                console.log("user added")
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async(event) => {
         event.preventDefault()
-        // await addPatient()
+        await addPatient()
         navigate('/userLogin')
     }
 

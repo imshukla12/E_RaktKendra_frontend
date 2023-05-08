@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const UserRequests = () => {
 
+    const user = JSON.parse(localStorage.getItem("user"))
     const bloodType = ["O+", "A+", "A-", "B+", "B-", "AB"];
     const bloodBanks = ["A", "B", "C", "D", "E"];
     const [show, setShow] = useState(false);
@@ -12,9 +14,11 @@ const UserRequests = () => {
     const [isOpenPlaceDonation, setIsOpenPlaceDonation] = useState(false);
     const [quantity, setQuantity] = useState("")
     const [selectedBloodType, setSelectedBloodType] = useState("");
-    const [selectedBloodTypeDonation, setSelectedBloodTypeDonation] = useState("");
+    // const [selectedBloodTypeDonation, setSelectedBloodTypeDonation] = useState("");
     const [selectedPlace, setSelectedPlace] = useState("");
     const [selectedPlaceDonation, setSelectedPlaceDonation] = useState("");
+    const [prevDonationRequest, setPrevDonationRequest] = useState(false)
+    const [count, setCount] = useState(0)
 
     const toggleModal = () => {
         setShow(!show);
@@ -37,10 +41,10 @@ const UserRequests = () => {
         setIsOpen(false);
     };
 
-    const handleSelectBloodTypeDonation = (blood) => {
-        setSelectedBloodTypeDonation(blood);
-        setIsOpenDonation(false);
-    };
+    // const handleSelectBloodTypeDonation = (blood) => {
+    //     setSelectedBloodTypeDonation(blood);
+    //     setIsOpenDonation(false);
+    // };
 
     const handleSelectBloodBank = (bank) => {
         setSelectedPlace(bank);
@@ -54,25 +58,72 @@ const UserRequests = () => {
 
     const submitHandler = async (event) => {
         event.preventDefault()
-        // const data = {
-        //   appointmentTimestamp: new Date(),
-        //   patientId: patientDetails.patientId,
-        //   departmentName: selectedDepartment,
-        //   preferredLanguage: selectedLanguage
-        // }
+        const data = {
+            "bloodBankId": 1,
+            "bloodType": selectedBloodType,
+            "userId": user.userId,
+            "quantity": quantity
+        }
+        console.log("data",data)
         setShow(!show)
+        await axios.post(`http://localhost:9090/bloodRequest/bloodRequestByUser`,data)
+        .then((response) =>{
+            if(response.data == true){
+                alert("Request is accepted.You can visit the selected bank for collecting blood.")
+            }else if(response.data == false){
+                alert("Request is denied, the selected blood type and quantity is not available in the selected blood bank.")
+            }
+        })
+        .catch((error) => {
+            console.log(error)
+        })
     }
 
     const submitHandlerDonation = async (event) => {
         event.preventDefault()
-        // const data = {
-        //   appointmentTimestamp: new Date(),
-        //   patientId: patientDetails.patientId,
-        //   departmentName: selectedDepartment,
-        //   preferredLanguage: selectedLanguage
-        // }
+        const data = {
+            "bankId": 1,
+            "bloodType": user.bloodType,
+            "userId": user.userId
+        }
+        // console.log("data", data)
         setShowDonation(!showDonation)
+        await axios.post(`http://localhost:9090/bloodDonation/bloodDonationRequest`, data)
+            .then((response) => {
+                // console.log("response", response.data)
+                alert("Your request is saved. You can go to your selected bank and donate there. ThankYou!!")
+                setCount(count+1)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     }
+
+    const fetchPrevDonationRequest = async () => {
+        await axios.get(`http://localhost:9090/bloodDonation/checkBloodDonationRequest/${user.userId}`)
+            .then((response) => {
+                // console.log("prevDona", response.data)
+                setPrevDonationRequest(response.data)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+
+    const deletePrevDonationRequest = async () => {
+        await axios.delete(`http://localhost:9090/bloodDonation/revokeBloodDonationRequest/${user.userId}`)
+            .then((response) => {
+                // console.log(response.data)
+                setCount(count + 1)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+
+    useEffect(() => {
+        fetchPrevDonationRequest()
+    }, [count])
 
     return (
         <div className="flex flex-col items-center justify-center border-2 border-gray-300 rounded-lg p-8 space-y-8 mt-8 w-4/5 font-serif">
@@ -203,9 +254,13 @@ const UserRequests = () => {
                 </div>
                 {/* blood donation request button */}
                 <div>
-                    <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={toggleDonationModal}>
-                        Request Blood Donation
-                    </button>
+                    {prevDonationRequest ?
+                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={deletePrevDonationRequest}>
+                            Revoke Request Blood
+                        </button>
+                        : <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={toggleDonationModal}>
+                            Request Blood Donation
+                        </button>}
                     {/* Modal */}
                     {showDonation && (
                         <div className="fixed z-10 inset-0 overflow-y-auto">
@@ -238,7 +293,7 @@ const UserRequests = () => {
                                             </button>
                                         </div>
                                         {/* bloodType button */}
-                                        <div className="relative flex flex-col items-center w-[340px] rounded-lg">
+                                        {/* <div className="relative flex flex-col items-center w-[340px] rounded-lg">
                                             <button onClick={() => setIsOpenDonation((prev) => !prev)} className="p-2 bg-blue-100 w-full flex items-center justify-between mb-4 font-serif text-lg rounded-lg border-2 border-gray-500 active:border-blue-100 duration-300">
                                                 {selectedBloodTypeDonation ? selectedBloodTypeDonation : "Select Blood Group"}
                                                 <svg
@@ -269,7 +324,7 @@ const UserRequests = () => {
                                                     ))}
                                                 </div>
                                             )}
-                                        </div>
+                                        </div> */}
                                         {/* bloodBank button */}
                                         <div className="relative flex flex-col items-center w-[340px] rounded-lg">
                                             <button
