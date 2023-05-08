@@ -1,13 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import logo from "../images/GradientLogo.png";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const FieldWorkerLogin = () => {
-  const navigate = useNavigate();
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  console.log("e",email)
+  console.log("p",password)
+  const navigate = useNavigate()
 
-  const handleSubmit = () => {
-    navigate(`/fieldWorker`);
+  const handleSubmit = async() => {
+    console.log("submit")
+    const data = {
+      "username": email,
+      "password": password
+    }
+    console.log("data", data)
+    await axios.post(`http://localhost:9090/worker/workerLogin`,data)
+    .then((response) => {
+      console.log("response", response.data)
+      localStorage.setItem("fieldWorker", JSON.stringify(response.data))
+      navigate(`/fieldWorker`)
+    })
+   .catch((error) => {
+    console.log(error)
+   })
   };
 
   return (
@@ -23,12 +42,14 @@ const FieldWorkerLogin = () => {
               FieldWorker Login Portal
             </h4>
           </div>
-          <form className="w-4/5 p-4 font-serif flex flex-col justify-center items-center">
+          <form className="w-4/5 p-4 font-serif flex flex-col justify-center items-center" onSubmit={handleSubmit}>
             <div className="relative z-0 w-full mb-6 group">
               <input
                 type="email"
                 name="floating_email"
+                value={email}
                 id="floating_email"
+                onChange={(e) => setEmail(e.target.value)}
                 className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:border-gray-600 focus:outline-none focus:ring-0 focus:border-gray-600 peer"
                 placeholder=" "
                 required
@@ -44,7 +65,9 @@ const FieldWorkerLogin = () => {
               <input
                 type="password"
                 name="floating_password"
+                value={password}
                 id="floating_password"
+                onChange={(e) => setPassword(e.target.value)}
                 className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:border-gray-600 focus:outline-none focus:ring-0 focus:border-gray-600 peer"
                 placeholder=" "
                 required
@@ -60,7 +83,7 @@ const FieldWorkerLogin = () => {
               <button
                 type="submit"
                 className="md:w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                onClick={handleSubmit}
+                // onClick={handleSubmit}
               >
                 LogIn
               </button>

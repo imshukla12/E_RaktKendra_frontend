@@ -8,7 +8,7 @@ const HomePage = () => {
   const navigate = useNavigate()
 
   const handleFieldWorker = () => {
-    navigate(`/fieldWorkerLogin`)
+    navigate(`/loginField`)
   }
 
   const handleUser = () => {
