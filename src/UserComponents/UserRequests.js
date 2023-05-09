@@ -5,7 +5,7 @@ const UserRequests = () => {
 
     const user = JSON.parse(localStorage.getItem("user"))
     const bloodType = ["O+", "A+", "A-", "B+", "B-", "AB"];
-    const bloodBanks = ["A", "B", "C", "D", "E"];
+    const [bloodBanks,setBloodBanks] = useState([])
     const [show, setShow] = useState(false);
     const [showDonation, setShowDonation] = useState(false)
     const [isOpen, setIsOpen] = useState(false);
@@ -18,6 +18,7 @@ const UserRequests = () => {
     const [selectedPlace, setSelectedPlace] = useState("");
     const [selectedPlaceDonation, setSelectedPlaceDonation] = useState("");
     const [prevDonationRequest, setPrevDonationRequest] = useState(false)
+    const [prevBloodRequest, setPrevBloodRequest] = useState(false)
     const [count, setCount] = useState(0)
 
     const toggleModal = () => {
@@ -59,30 +60,30 @@ const UserRequests = () => {
     const submitHandler = async (event) => {
         event.preventDefault()
         const data = {
-            "bloodBankId": 1,
+            "bloodBankId": selectedPlace,
             "bloodType": selectedBloodType,
             "userId": user.userId,
             "quantity": quantity
         }
-        console.log("data",data)
+        // console.log("data", data)
         setShow(!show)
-        await axios.post(`http://localhost:9090/bloodRequest/bloodRequestByUser`,data)
-        .then((response) =>{
-            if(response.data == true){
-                alert("Request is accepted.You can visit the selected bank for collecting blood.")
-            }else if(response.data == false){
-                alert("Request is denied, the selected blood type and quantity is not available in the selected blood bank.")
-            }
-        })
-        .catch((error) => {
-            console.log(error)
-        })
+        await axios.post(`http://localhost:9090/bloodRequest/bloodRequestByUser`, data)
+            .then((response) => {
+                if (response.data == true) {
+                    alert("Request is accepted.You can visit the selected bank for collecting blood.")
+                } else if (response.data == false) {
+                    alert("Request is denied, the selected blood type and quantity is not available in the selected blood bank.")
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     }
 
     const submitHandlerDonation = async (event) => {
         event.preventDefault()
         const data = {
-            "bankId": 1,
+            "bankId": selectedPlaceDonation,
             "bloodType": user.bloodType,
             "userId": user.userId
         }
@@ -92,7 +93,7 @@ const UserRequests = () => {
             .then((response) => {
                 // console.log("response", response.data)
                 alert("Your request is saved. You can go to your selected bank and donate there. ThankYou!!")
-                setCount(count+1)
+                setCount(count + 1)
             })
             .catch((error) => {
                 console.log(error)
@@ -110,6 +111,17 @@ const UserRequests = () => {
             })
     }
 
+    const fetchPrevBloodRequest = async () => {
+        await axios.get(`http://localhost:9090/bloodRequest/checkBloodRequest/${user.userId}`)
+            .then((response) => {
+                // console.log("prevBloodRequest",response.data)
+                setPrevBloodRequest(response.data)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+
     const deletePrevDonationRequest = async () => {
         await axios.delete(`http://localhost:9090/bloodDonation/revokeBloodDonationRequest/${user.userId}`)
             .then((response) => {
@@ -121,8 +133,31 @@ const UserRequests = () => {
             })
     }
 
+    const deletePrevBloodRequest = async() => {
+        await axios.delete(`http://localhost:9090/bloodRequest/revokeBloodRequest/${user.userId}`)
+        .then((response) => {
+            // console.log(response.data)
+            setCount(count+1)
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+    }
+
+    const fetchBloodBanks = async() => {
+        await axios.get(`http://localhost:9090/bloodBank/getCitiesAndBankId`)
+        .then((response) => {
+            setBloodBanks(response.data)
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+    }
+
     useEffect(() => {
+        fetchBloodBanks()
         fetchPrevDonationRequest()
+        fetchPrevBloodRequest()
     }, [count])
 
     return (
@@ -130,12 +165,16 @@ const UserRequests = () => {
             <p className="font-serif text-5xl text-red-700">
                 Welcome to E-RaktKendra
             </p>
-            <div className="flex flex-row justify-evenly w-2/3">
+            <div className="flex flex-row justify-evenly w-2/3 space-x-6">
                 <div>
                     {/* Request Button to open modal */}
-                    <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={toggleModal}>
-                        Request Blood
-                    </button>
+                    {prevBloodRequest ?
+                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={deletePrevBloodRequest}>
+                            Revoke Request Blood
+                        </button> :
+                        <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={toggleModal}>
+                            Request Blood
+                        </button>}
                     {/* Modal */}
                     {show && (
                         <div className="fixed z-10 inset-0 overflow-y-auto">
@@ -232,9 +271,9 @@ const UserRequests = () => {
                                                         <div
                                                             key={i}
                                                             className="flex w-full justify-between hover:bg-blue-100 p-2 cursor-pointer"
-                                                            onClick={() => handleSelectBloodBank(bank)}
+                                                            onClick={() => handleSelectBloodBank(bank.bankId)}
                                                         >
-                                                            <h3>{bank}</h3>
+                                                            <h3>{bank.city}</h3>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -256,7 +295,7 @@ const UserRequests = () => {
                 <div>
                     {prevDonationRequest ?
                         <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={deletePrevDonationRequest}>
-                            Revoke Request Blood
+                            Revoke Request Blood Donation
                         </button>
                         : <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" onClick={toggleDonationModal}>
                             Request Blood Donation
@@ -353,9 +392,9 @@ const UserRequests = () => {
                                                         <div
                                                             key={i}
                                                             className="flex w-full justify-between hover:bg-blue-100 p-2 cursor-pointer"
-                                                            onClick={() => handleSelectBloodBankDonation(bank)}
+                                                            onClick={() => handleSelectBloodBankDonation(bank.bankId)}
                                                         >
-                                                            <h3>{bank}</h3>
+                                                            <h3>{bank.city}</h3>
                                                         </div>
                                                     ))}
                                                 </div>

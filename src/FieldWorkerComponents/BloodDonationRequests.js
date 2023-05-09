@@ -69,6 +69,7 @@ const BloodDonationRequests = () => {
                     <tr>
                         <th>Request.Id</th>
                         <th>BloodType</th>
+                        <th>UserId</th>
                         {/* <th></th> */}
                     </tr>
                 </thead>
@@ -78,6 +79,7 @@ const BloodDonationRequests = () => {
                             <tr key={p.id} className='border-2 border-zinc-400'>
                                 <td>{p.bloodDonationRequestId}</td>
                                 <td>{p.bloodType}</td>
+                                <td>{p.userId}</td>
                                 <td className='flex flex-row'>
                                     <div className='p-2'>
                                         <button
