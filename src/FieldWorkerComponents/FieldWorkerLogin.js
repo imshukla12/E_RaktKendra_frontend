@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
-import logo from "../images/GradientLogo.png";
+import logo from "../images/logo_rakt.jpeg";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -29,7 +29,7 @@ const FieldWorkerLogin = () => {
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center bg-red-50 h-screen">
       {/* Navbar */}
       <Navbar />
       <div className="px-4 md:px-0 lg:w-2/5 p-2 flex flex-col items-center justify-around border-2 rounded-lg mt-8 border-zinc-500 shadow-lg">

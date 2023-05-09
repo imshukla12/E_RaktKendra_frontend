@@ -53,7 +53,7 @@ const UserRegistration = () => {
     }
 
     return (
-        <div className='flex flex-col '>
+        <div className='flex flex-col'>
             <Navbar />
             <div className='flex justify-center h-screen'>
                 <div className='w-full flex items-center justify-center'>

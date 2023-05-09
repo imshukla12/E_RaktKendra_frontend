@@ -74,6 +74,7 @@ const UserRequests = () => {
                 } else if (response.data == false) {
                     alert("Request is denied, the selected blood type and quantity is not available in the selected blood bank.")
                 }
+                setCount(count+1)
             })
             .catch((error) => {
                 console.log(error)
