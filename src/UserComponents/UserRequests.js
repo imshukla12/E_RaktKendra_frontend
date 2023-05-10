@@ -67,6 +67,8 @@ const UserRequests = () => {
         }
         // console.log("data", data)
         setShow(!show)
+        const jwtToken=localStorage.getItem("jwtToken");
+        axios.defaults.headers.common["Authorization"]=`Bearer ${jwtToken}`
         await axios.post(`http://localhost:9090/bloodRequest/bloodRequestByUser`, data)
             .then((response) => {
                 if (response.data == true) {
@@ -90,6 +92,8 @@ const UserRequests = () => {
         }
         // console.log("data", data)
         setShowDonation(!showDonation)
+        const jwtToken=localStorage.getItem("jwtToken");
+        axios.defaults.headers.common["Authorization"]=`Bearer ${jwtToken}`
         await axios.post(`http://localhost:9090/bloodDonation/bloodDonationRequest`, data)
             .then((response) => {
                 // console.log("response", response.data)
@@ -102,6 +106,8 @@ const UserRequests = () => {
     }
 
     const fetchPrevDonationRequest = async () => {
+        const jwtToken=localStorage.getItem("jwtToken");
+        axios.defaults.headers.common["Authorization"]=`Bearer ${jwtToken}`
         await axios.get(`http://localhost:9090/bloodDonation/checkBloodDonationRequest/${user.userId}`)
             .then((response) => {
                 // console.log("prevDona", response.data)
@@ -113,6 +119,8 @@ const UserRequests = () => {
     }
 
     const fetchPrevBloodRequest = async () => {
+        const jwtToken=localStorage.getItem("jwtToken");
+        axios.defaults.headers.common["Authorization"]=`Bearer ${jwtToken}`
         await axios.get(`http://localhost:9090/bloodRequest/checkBloodRequest/${user.userId}`)
             .then((response) => {
                 // console.log("prevBloodRequest",response.data)
@@ -124,6 +132,8 @@ const UserRequests = () => {
     }
 
     const deletePrevDonationRequest = async () => {
+        const jwtToken=localStorage.getItem("jwtToken");
+        axios.defaults.headers.common["Authorization"]=`Bearer ${jwtToken}`
         await axios.delete(`http://localhost:9090/bloodDonation/revokeBloodDonationRequest/${user.userId}`)
             .then((response) => {
                 // console.log(response.data)
@@ -135,6 +145,8 @@ const UserRequests = () => {
     }
 
     const deletePrevBloodRequest = async() => {
+        const jwtToken=localStorage.getItem("jwtToken");
+        axios.defaults.headers.common["Authorization"]=`Bearer ${jwtToken}`
         await axios.delete(`http://localhost:9090/bloodRequest/revokeBloodRequest/${user.userId}`)
         .then((response) => {
             // console.log(response.data)
@@ -146,6 +158,8 @@ const UserRequests = () => {
     }
 
     const fetchBloodBanks = async() => {
+        const jwtToken=localStorage.getItem("jwtToken");
+        axios.defaults.headers.common["Authorization"]=`Bearer ${jwtToken}`
         await axios.get(`http://localhost:9090/bloodBank/getCitiesAndBankId`)
         .then((response) => {
             setBloodBanks(response.data)

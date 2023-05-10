@@ -25,6 +25,8 @@ const BloodDonationRequests = () => {
     ));
 
     const getAllBloodDonationRequest = async () => {
+        const jwtToken=localStorage.getItem("jwtToken")
+        axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`
         await axios.get(`http://localhost:9090/bloodDonation/getAllBloodDonationRequests/${fieldWorker.bloodBankId}`)
             .then((response) => {
                 setBloodDonationRequests(response.data)
@@ -34,26 +36,30 @@ const BloodDonationRequests = () => {
             })
     }
 
-    const acceptRequest = async(id) => {
+    const acceptRequest = async (id) => {
+        const jwtToken=localStorage.getItem("jwtToken")
+        axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`
         await axios.delete(`http://localhost:9090/bloodDonation/acceptBloodDonationRequest/${id}`)
-        .then((response) => {
-            console.log(response.data)
-            setCount(count+1)
-        })
-        .catch((error) => {
-            console.log(error)
-        })
+            .then((response) => {
+                console.log(response.data)
+                setCount(count + 1)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     }
 
-    const rejectRequest = async(userId) => {
+    const rejectRequest = async (userId) => {
+        const jwtToken=localStorage.getItem("jwtToken")
+        axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`
         await axios.delete(`http://localhost:9090/bloodDonation/revokeBloodDonationRequest/${userId}`)
-        .then((response) => {
-            console.log(response.data)
-            setCount(count+1)
-        })
-        .catch((error) => {
-            console.log(error)
-        })
+            .then((response) => {
+                console.log(response.data)
+                setCount(count + 1)
+            })
+            .catch((error) => {
+                console.log(error)
+            })
     }
 
 

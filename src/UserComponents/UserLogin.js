@@ -11,21 +11,23 @@ const UserLogin = () => {
 
   const handleSubmit = async(event) => {
     event.preventDefault()
-    // console.log("submit")
     const data = {
       "username": email,
-      "password": password
-    }
-    // console.log("data", data)
-    await axios.post(`http://localhost:9090/user/userLogin`,data)
+      "password": password,
+      "role": "user"
+    }  
+    await axios.post(`http://localhost:9090/generateToken`,data)
     .then((response) => {
-      // console.log("response", response.data)
-      localStorage.setItem("user", JSON.stringify(response.data))
-      navigate(`/user`);
+      // console.log(response.data)
+      const jwtToken = response.data.jwtToken
+      axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`
+      localStorage.setItem("jwtToken",response.data.jwtToken)
+      localStorage.setItem("user",JSON.stringify(response.data.user))
+      navigate(`/user`)
     })
-   .catch((error) => {
-    console.log(error)
-   })  
+    .catch((error) => {
+      console.log(error)
+    })
   };
 
   return (

@@ -14,18 +14,21 @@ const FieldWorkerLogin = () => {
     // console.log("submit")
     const data = {
       "username": email,
-      "password": password
+      "password": password,
+      "role":"fieldworker"
     }
-    // console.log("data", data)
-    await axios.post(`http://localhost:9090/fieldWorker/workerLogin`,data)
+    await axios.post(`http://localhost:9090/generateToken`,data)
     .then((response) => {
-      // console.log("response", response.data)
-      localStorage.setItem("fieldWorker", JSON.stringify(response.data))
+      // console.log(response.data)
+      const jwtToken = response.data.jwtToken
+      axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`
+      localStorage.setItem("jwtToken",response.data.jwtToken)
+      localStorage.setItem("fieldWorker",JSON.stringify(response.data.fieldWorkerDTO))
       navigate(`/fieldWorker`)
     })
-   .catch((error) => {
-    console.log(error)
-   })
+    .catch((error) => {
+      console.log(error)
+    })
   };
 
   return (

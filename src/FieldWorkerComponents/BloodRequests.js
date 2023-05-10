@@ -24,6 +24,8 @@ const BloodRequests = () => {
     ));
 
     const getAllBloodRequests = async() => {
+        const jwtToken=localStorage.getItem("jwtToken")
+        axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`
         await axios.get(`http://localhost:9090/bloodRequest/getAllBloodRequests/${fieldWorker.bloodBankId}`)
         .then((response) => {
             setBloodRequests(response.data)
@@ -34,6 +36,8 @@ const BloodRequests = () => {
     }
 
     const acceptRequest = async(id) => {
+        const jwtToken=localStorage.getItem("jwtToken")
+        axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`
         await axios.delete(`http://localhost:9090/bloodRequest/acceptBloodRequest/${id}`)
         .then((response) => {
             console.log(response.data)
@@ -45,6 +49,8 @@ const BloodRequests = () => {
     }
 
     const rejectRequest = async(userId) => {
+        const jwtToken=localStorage.getItem("jwtToken")
+        axios.defaults.headers.common["Authorization"] = `Bearer ${jwtToken}`
         await axios.delete(`http://localhost:9090/bloodRequest/revokeBloodRequest/${userId}`)
         .then((response) => {
             console.log(response.data)
