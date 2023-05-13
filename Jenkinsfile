@@ -7,12 +7,12 @@ pipeline {
                 echo 'Project is cloned'
             }
         }
-//       stage('Build') {
-//             steps {
-//                 sh 'npm install'
-//                 echo 'npm build completed'
-//             }
-//         }
+      stage('Build') {
+            steps {
+                sh 'npm install'
+                echo 'npm build completed'
+            }
+        }
 //       stage('Docker Build Image') {
 //              steps {
 //                   echo 'creating docker image'
