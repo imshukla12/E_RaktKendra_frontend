@@ -1,7 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage('clone project frontend') {
+        stage('git clone frontend') {
             steps {
                 git url: 'https://github.com/imshukla12/E_RaktKendra_frontend.git' , branch: 'main'
                 echo 'Project is cloned'
