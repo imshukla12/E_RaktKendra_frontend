@@ -7,19 +7,19 @@ pipeline {
                 echo 'Project is cloned'
             }
         }
-      stage('Build') {
-            steps {
-                sh 'npm install'
-                echo 'npm build completed'
-            }
-        }
-//       stage('Docker Build Image') {
-//              steps {
-//                   echo 'creating docker image'
-//                   sh 'docker build -t eraktkendra_security_frontend .'
-//                   echo 'docker image created'
+//       stage('Build') {
+//             steps {
+//                 sh 'npm install'
+//                 echo 'npm build completed'
 //             }
 //         }
+      stage('Docker Build Image') {
+             steps {
+                  echo 'creating docker image'
+                  sh 'docker build -t eraktkendra_security_frontend .'
+                  echo 'docker image created'
+            }
+        }
 //       stage('Push Docker Image to Docker Hub') {
 //               steps {
 //                         echo 'docker tag'
