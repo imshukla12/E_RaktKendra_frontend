@@ -7,12 +7,6 @@ pipeline {
                 echo 'Project is cloned'
             }
         }
-//       stage('Build') {
-//             steps {
-//                 sh 'npm install'
-//                 echo 'npm build completed'
-//             }
-//         }
       stage('Docker Build Image') {
              steps {
                   echo 'creating docker image'
@@ -30,16 +24,5 @@ pipeline {
                     }
               }
       }
-    //   stage('Ansible Pull Docker Image') {
-    //               steps {
-    //                   ansiblePlaybook becomeUser: null,
-    //                   colorized: true,
-    //                   disableHostKeyChecking: true,
-    //                   installation: 'Ansible',
-    //                   inventory: 'inventory',
-    //                   playbook: 'playbook.yml',
-    //                   sudoUser: null
-    //               }
-    //   }
     }
 }
