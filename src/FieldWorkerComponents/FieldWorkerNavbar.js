@@ -9,6 +9,7 @@ const FieldWorkerNavbar = () => {
 
     const logout = () =>{
         localStorage.removeItem("fieldWorker")
+        localStorage.removeItem("jwtToken")
         window.location.href = "/"
     }
 
